@@ -2,17 +2,31 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios'
+import {User} from './components/User'
+import {Followers} from './components/Followers'
 
 export default class App extends React.Component {
 state={
-  user:""
+  user:{},
 }
 componentDidMount(){
   axios.get(`https://api.github.com/users/jtwray`)
   .then(res=>this.setState({user:res.data}))
   .then(_=>console.log(this.state.user))
+.then(this.fetchFollowers())
+  .catch(err=>console.error(err))
+
+  
+ 
+}
+
+ fetchFollowers=()=>{
+  axios.get(`https://api.github.com/users/jtwray/followers`)
+  .then(res=>this.setState({followers:res.data}))
+  .then(_=>console.log(this.state.followers))
 
   .catch(err=>console.error(err))
+
 }
 render(){
   return (
@@ -31,6 +45,8 @@ render(){
           Learn React
         </a>
       </header>
+      <User userData={this.state.user}/>
+      <Followers followersData={this.state.followers}/>
     </div>
   );
 }
